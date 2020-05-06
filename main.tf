@@ -43,13 +43,13 @@ data "ibm_is_subnet" "f5_management" {
   identifier = var.management_subnet_id
 }
 
-#data "ibm_is_subnet" "f5_internal" {
-#  identifier = var.internal_subnet_id
-#}
+data "ibm_is_subnet" "f5_internal" {
+  identifier = var.internal_subnet_id
+}
 
-#data "ibm_is_subnet" "f5_external" {
-#  identifier = var.external_subnet_id
-#}
+data "ibm_is_subnet" "f5_external" {
+  identifier = var.external_subnet_id
+}
 
 data "ibm_is_ssh_key" "f5_ssh_pub_key" {
   name = var.ssh_key_name
@@ -132,15 +132,6 @@ resource "ibm_is_security_group_rule" "f5_management_in_iquery" {
   }
 }
 
-resource "ibm_is_security_group_rule" "f5_management_in_8443" {
-  group     = ibm_is_security_group.f5_management_sg.id
-  direction = "inbound"
-  tcp {
-    port_min = 8443
-    port_max = 8443
-  }
-}
-
 // allow all outbound on control plane
 // all TCP
 resource "ibm_is_security_group_rule" "f5_management_out_tcp" {
@@ -173,65 +164,65 @@ resource "ibm_is_security_group_rule" "f5_management_out_icmp" {
 
 // allow all traffic to data plane interfaces
 // TMM is the firewall
-#resource "ibm_is_security_group" "f5_tmm_sg" {
-#  name = "f5-tmm-sg"
-#  vpc  = data.ibm_is_subnet.f5_management.vpc
-#}
+resource "ibm_is_security_group" "f5_tmm_sg" {
+  name = "f5-tmm-sg"
+  vpc  = data.ibm_is_subnet.f5_management.vpc
+}
 
 // all TCP
-#resource "ibm_is_security_group_rule" "f5_tmm_in_tcp" {
-#  group     = ibm_is_security_group.f5_tmm_sg.id
-#  direction = "inbound"
-#  tcp {
-#    port_min = 1
-#    port_max = 65535
-#  }
-#}
+resource "ibm_is_security_group_rule" "f5_tmm_in_tcp" {
+  group     = ibm_is_security_group.f5_tmm_sg.id
+  direction = "inbound"
+  tcp {
+    port_min = 1
+    port_max = 65535
+  }
+}
 
-#resource "ibm_is_security_group_rule" "f5_tmm_out_tcp" {
-#  group     = ibm_is_security_group.f5_tmm_sg.id
-#  direction = "outbound"
-#  tcp {
-#    port_min = 1
-#    port_max = 65535
-#  }
-#}
+resource "ibm_is_security_group_rule" "f5_tmm_out_tcp" {
+  group     = ibm_is_security_group.f5_tmm_sg.id
+  direction = "outbound"
+  tcp {
+    port_min = 1
+    port_max = 65535
+  }
+}
 
 // all UDP
-#resource "ibm_is_security_group_rule" "f5_tmm_in_udp" {
-#  group     = ibm_is_security_group.f5_tmm_sg.id
-#  direction = "inbound"
-#  udp {
-#    port_min = 1
-#    port_max = 65535
-#  }
-#}
+resource "ibm_is_security_group_rule" "f5_tmm_in_udp" {
+  group     = ibm_is_security_group.f5_tmm_sg.id
+  direction = "inbound"
+  udp {
+    port_min = 1
+    port_max = 65535
+  }
+}
 
-#resource "ibm_is_security_group_rule" "f5_tmm_out_udp" {
-#  group     = ibm_is_security_group.f5_tmm_sg.id
-#  direction = "outbound"
-#  udp {
-#    port_min = 1
-#    port_max = 65535
-#  }
-#}
+resource "ibm_is_security_group_rule" "f5_tmm_out_udp" {
+  group     = ibm_is_security_group.f5_tmm_sg.id
+  direction = "outbound"
+  udp {
+    port_min = 1
+    port_max = 65535
+  }
+}
 
 // all ICMP
-#resource "ibm_is_security_group_rule" "f5_tmm_in_icmp" {
-#  group     = ibm_is_security_group.f5_tmm_sg.id
-#  direction = "inbound"
-#  icmp {
-#    type = 8
-#  }
-#}
+resource "ibm_is_security_group_rule" "f5_tmm_in_icmp" {
+  group     = ibm_is_security_group.f5_tmm_sg.id
+  direction = "inbound"
+  icmp {
+    type = 8
+  }
+}
 
-#resource "ibm_is_security_group_rule" "f5_tmm_out_icmp" {
-#  group     = ibm_is_security_group.f5_tmm_sg.id
-#  direction = "outbound"
-#  icmp {
-#    type = 0
-#  }
-#}
+resource "ibm_is_security_group_rule" "f5_tmm_out_icmp" {
+  group     = ibm_is_security_group.f5_tmm_sg.id
+  direction = "outbound"
+  icmp {
+    type = 0
+  }
+}
 
 resource "ibm_is_instance" "f5_ve_instance" {
   name    = var.instance_name
@@ -243,16 +234,16 @@ resource "ibm_is_instance" "f5_ve_instance" {
     subnet          = data.ibm_is_subnet.f5_management.id
     security_groups = [ibm_is_security_group.f5_management_sg.id]
   }
-  #network_interfaces {
-  #  name            = "tmm-1-1-internal"
-  #  subnet          = data.ibm_is_subnet.f5_internal.id
-  #  security_groups = [ibm_is_security_group.f5_tmm_sg.id]
-  #}
-  #network_interfaces {
-  #  name            = "tmm-1-2-external"
-  #  subnet          = data.ibm_is_subnet.f5_external.id
-  #  security_groups = [ibm_is_security_group.f5_tmm_sg.id]
-  #}
+  network_interfaces {
+    name            = "tmm-1-1-internal"
+    subnet          = data.ibm_is_subnet.f5_internal.id
+    security_groups = [ibm_is_security_group.f5_tmm_sg.id]
+  }
+  network_interfaces {
+    name            = "tmm-1-2-external"
+    subnet          = data.ibm_is_subnet.f5_external.id
+    security_groups = [ibm_is_security_group.f5_tmm_sg.id]
+  }
   vpc  = data.ibm_is_subnet.f5_management.vpc
   zone = data.ibm_is_subnet.f5_management.zone
   keys = [data.ibm_is_ssh_key.f5_ssh_pub_key.id]
