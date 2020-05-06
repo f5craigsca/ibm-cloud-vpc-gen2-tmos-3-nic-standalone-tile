@@ -41,15 +41,15 @@ variable "management_subnet_id" {
   description = "VPC Gen2 subnet ID for the TMOS management network.  To list available subnets, run `ibmcloud is subnets`."
 }
 
-#variable "internal_subnet_id" {
-#  default = ""
-#  description = "VPC Gen2 subnet ID for the TMOS internal network.  To list available subnets, run `ibmcloud is subnets`."
-#}
+variable "internal_subnet_id" {
+  default = ""
+  description = "VPC Gen2 subnet ID for the TMOS internal network.  To list available subnets, run `ibmcloud is subnets`."
+}
 
-#variable "external_subnet_id" {
-#  default = ""
-#  description = "VPC Gen2 subnet ID for the TMOS external (VIP) network.  To list available subnets, run `ibmcloud is subnets`."
-#}
+variable "external_subnet_id" {
+  default = ""
+  description = "VPC Gen2 subnet ID for the TMOS external (VIP) network.  To list available subnets, run `ibmcloud is subnets`."
+}
 
 
 
